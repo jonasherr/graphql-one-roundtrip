@@ -1,19 +1,17 @@
-import { useQuery } from 'urql';
+import { graphql, type FragmentOf, readFragment } from "../graphql";
 
-const USER_LANGUAGES_QUERY = `
-	query UserLanguagesQuery {
-		viewer {
-			repositories(first: 100, ownerAffiliations: OWNER) {
-				nodes {
-					primaryLanguage {
-						name
-						color
-					}
+export const UserLanguagesFragment = graphql(`
+	fragment UserLanguages_user on User {
+		repositoryLanguages: repositories(first: 100, ownerAffiliations: OWNER) {
+			nodes {
+				primaryLanguage {
+					name
+					color
 				}
 			}
 		}
 	}
-`;
+`);
 
 interface Language {
 	name: string;
@@ -21,18 +19,13 @@ interface Language {
 	count: number;
 }
 
-export function UserLanguages() {
-	const [result] = useQuery({ query: USER_LANGUAGES_QUERY });
+interface UserLanguagesProps {
+	data: FragmentOf<typeof UserLanguagesFragment>;
+}
 
-	if (result.fetching) {
-		return <div className="text-gray-600 text-sm">Loading languages...</div>;
-	}
-
-	if (result.error) {
-		return null;
-	}
-
-	const repositories = result.data?.viewer?.repositories?.nodes || [];
+export function UserLanguages({ data }: UserLanguagesProps) {
+	const user = readFragment(UserLanguagesFragment, data);
+	const repositories = user.repositoryLanguages.nodes || [];
 
 	// Aggregate languages
 	const languageMap = new Map<string, Language>();
@@ -60,7 +53,9 @@ export function UserLanguages() {
 
 	return (
 		<div className="mt-4">
-			<h3 className="text-sm font-semibold text-gray-700 mb-2">Top Languages</h3>
+			<h3 className="text-sm font-semibold text-gray-700 mb-2">
+				Top Languages
+			</h3>
 			<div className="flex gap-2 flex-wrap">
 				{topLanguages.map((lang) => (
 					<div
@@ -69,7 +64,7 @@ export function UserLanguages() {
 					>
 						<div
 							className="w-3 h-3 rounded-full"
-							style={{ backgroundColor: lang.color || '#858585' }}
+							style={{ backgroundColor: lang.color || "#858585" }}
 						/>
 						<span className="text-sm text-gray-700">{lang.name}</span>
 						<span className="text-xs text-gray-500">({lang.count})</span>

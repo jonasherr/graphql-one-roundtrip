@@ -1,38 +1,31 @@
-import { useQuery } from 'urql';
+import { graphql, type FragmentOf, readFragment } from '../graphql';
 import { Link } from 'react-router-dom';
 
-const USER_PINNED_REPOS_QUERY = `
-	query UserPinnedReposQuery {
-		viewer {
-			pinnedItems(first: 6, types: REPOSITORY) {
-				nodes {
-					... on Repository {
-						id
-						name
-						description
-						stargazerCount
-						owner {
-							login
-						}
+export const UserPinnedReposFragment = graphql(`
+	fragment UserPinnedRepos_user on User {
+		pinnedItems(first: 6, types: REPOSITORY) {
+			nodes {
+				... on Repository {
+					id
+					name
+					description
+					stargazerCount
+					owner {
+						login
 					}
 				}
 			}
 		}
 	}
-`;
+`);
 
-export function UserPinnedRepos() {
-	const [result] = useQuery({ query: USER_PINNED_REPOS_QUERY });
+interface UserPinnedReposProps {
+	data: FragmentOf<typeof UserPinnedReposFragment>;
+}
 
-	if (result.fetching) {
-		return <div className="text-gray-600 text-sm">Loading pinned repositories...</div>;
-	}
-
-	if (result.error) {
-		return null;
-	}
-
-	const pinnedRepos = result.data?.viewer?.pinnedItems?.nodes || [];
+export function UserPinnedRepos({ data }: UserPinnedReposProps) {
+	const user = readFragment(UserPinnedReposFragment, data);
+	const pinnedRepos = user.pinnedItems.nodes || [];
 
 	if (pinnedRepos.length === 0) {
 		return null;
@@ -42,7 +35,7 @@ export function UserPinnedRepos() {
 		<div className="mt-4">
 			<h3 className="text-sm font-semibold text-gray-700 mb-2">Pinned Repositories</h3>
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-				{pinnedRepos.map((repo: any) => (
+				{pinnedRepos.map((repo) => (
 					<Link
 						key={repo.id}
 						to={`/repo/${repo.owner.login}/${repo.name}`}

@@ -1,58 +1,43 @@
-import { gql, useQuery } from "urql";
-import { UserStats } from './UserStats';
-import { UserLanguages } from './UserLanguages';
-import { UserPinnedRepos } from './UserPinnedRepos';
+import { graphql, type FragmentOf } from '../graphql';
+import { UserStats, UserStatsFragment } from './UserStats';
+import { UserLanguages, UserLanguagesFragment } from './UserLanguages';
+import { UserPinnedRepos, UserPinnedReposFragment } from './UserPinnedRepos';
 
-const USER_PROFILE_QUERY = gql`
-	query UserProfileQuery {
-		viewer {
-			id
-			login
-			name
-			avatarUrl
-			bio
-		}
+export const UserProfileFragment = graphql(`
+	fragment UserProfile_user on User @_unmask {
+		id
+		login
+		name
+		avatarUrl
+		bio
+		...UserStats_user
+		...UserLanguages_user
+		...UserPinnedRepos_user
 	}
-`;
+`, [UserStatsFragment, UserLanguagesFragment, UserPinnedReposFragment]);
 
-export function UserProfile() {
-	const [result] = useQuery({ query: USER_PROFILE_QUERY });
+interface UserProfileProps {
+	data: FragmentOf<typeof UserProfileFragment>;
+}
 
-	if (result.fetching) {
-		return <div className="text-gray-600">Loading profile...</div>;
-	}
-
-	if (result.error) {
-		return (
-			<div className="text-red-600">
-				Error loading profile: {result.error.message}
-			</div>
-		);
-	}
-
-	const user = result.data?.viewer;
-
-	if (!user) {
-		return <div className="text-gray-600">No profile data</div>;
-	}
-
+export function UserProfile({ data }: UserProfileProps) {
 	return (
 		<div className="bg-white rounded-lg shadow-sm p-6 mb-6">
 			<div className="flex items-start gap-4">
 				<img
-					src={user.avatarUrl}
-					alt={user.login}
+					src={data.avatarUrl}
+					alt={data.login}
 					className="w-20 h-20 rounded-full"
 				/>
 				<div className="flex-grow">
 					<h1 className="text-2xl font-bold text-gray-900">
-						{user.name || user.login}
+						{data.name || data.login}
 					</h1>
-					<p className="text-gray-600">@{user.login}</p>
-					{user.bio && <p className="text-gray-700 mt-2">{user.bio}</p>}
-					<UserStats />
-					<UserLanguages />
-					<UserPinnedRepos />
+					<p className="text-gray-600">@{data.login}</p>
+					{data.bio && <p className="text-gray-700 mt-2">{data.bio}</p>}
+					<UserStats data={data} />
+					<UserLanguages data={data} />
+					<UserPinnedRepos data={data} />
 				</div>
 			</div>
 		</div>

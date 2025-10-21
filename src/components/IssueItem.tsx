@@ -1,16 +1,21 @@
-interface Issue {
-	id: string;
-	title: string;
-	number: number;
-	state: string;
-	createdAt: string;
-}
+import { graphql, type FragmentOf, readFragment } from '../graphql';
+
+export const IssueItemFragment = graphql(`
+	fragment IssueItem_issue on Issue {
+		id
+		title
+		number
+		state
+		createdAt
+	}
+`);
 
 interface IssueItemProps {
-	issue: Issue;
+	data: FragmentOf<typeof IssueItemFragment>;
 }
 
-export function IssueItem({ issue }: IssueItemProps) {
+export function IssueItem({ data }: IssueItemProps) {
+	const issue = readFragment(IssueItemFragment, data);
 	const date = new Date(issue.createdAt).toLocaleDateString();
 
 	return (
