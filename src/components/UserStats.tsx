@@ -1,7 +1,9 @@
-import { graphql, type FragmentOf, readFragment } from '../graphql';
+import { type FragmentOf, graphql, readFragment } from "../graphql";
 
 export const UserStatsFragment = graphql(`
 	fragment UserStats_user on User {
+		id
+		__typename
 		followers {
 			totalCount
 		}

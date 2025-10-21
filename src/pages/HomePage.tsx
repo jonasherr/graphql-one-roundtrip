@@ -10,6 +10,8 @@ const HomePageQuery = graphql(`
 			...UserProfile_user
 		}
 		user(login: $login) {
+			id
+			__typename
 			repositories(first: 6, orderBy: {field: STARGAZERS, direction: DESC}) {
 				nodes {
 					...RepositoryCard_repository

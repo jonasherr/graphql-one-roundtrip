@@ -1,8 +1,9 @@
-import { cacheExchange, createClient, fetchExchange } from "urql";
+import { cacheExchange } from "@urql/exchange-graphcache";
+import { createClient, fetchExchange } from "urql";
 
 export const client = createClient({
 	url: "https://api.github.com/graphql",
-	exchanges: [cacheExchange, fetchExchange],
+	exchanges: [cacheExchange(), fetchExchange],
 	preferGetMethod: false,
 	fetchOptions: () => {
 		const token = import.meta.env.VITE_GITHUB_TOKEN;

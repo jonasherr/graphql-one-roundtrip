@@ -11,6 +11,9 @@ importers:
       '@tailwindcss/vite':
         specifier: ^4.1.14
         version: 4.1.14(vite@7.1.11(@types/node@24.8.1)(jiti@2.6.1)(lightningcss@1.30.1))
+      '@urql/exchange-graphcache':
+        specifier: ^8.1.0
+        version: 8.1.0(@urql/core@6.0.1(graphql@16.11.0))(graphql@16.11.0)
       gql.tada:
         specifier: ^1.8.13
         version: 1.8.13(graphql@16.11.0)(typescript@5.9.3)
@@ -721,6 +724,11 @@ packages:
 
   '@urql/core@6.0.1':
     resolution: {integrity: sha512-FZDiQk6jxbj5hixf2rEPv0jI+IZz0EqqGW8mJBEug68/zHTtT+f34guZDmyjJZyiWbj0vL165LoMr/TkeDHaug==}
+
+  '@urql/exchange-graphcache@8.1.0':
+    resolution: {integrity: sha512-KxdDFcGAWhYOkpCz/NLNHb8SaWSxE2G1iv+jlFty2f/ZlCkD+FjtzwQuieGl7fk1MVR8DG1zLmxGNlwfCNksfQ==}
+    peerDependencies:
+      '@urql/core': ^6.0.0
 
   '@vitejs/plugin-react@5.0.4':
     resolution: {integrity: sha512-La0KD0vGkVkSk6K+piWDKRUyg8Rl5iAIKRMH0vMJI0Eg47bq1eOxmoObAaQG37WMW9MSyk7Cs8EIWwJC1PtzKA==}
@@ -2001,6 +2009,14 @@ snapshots:
   '@urql/core@6.0.1(graphql@16.11.0)':
     dependencies:
       '@0no-co/graphql.web': 1.2.0(graphql@16.11.0)
+      wonka: 6.3.5
+    transitivePeerDependencies:
+      - graphql
+
+  '@urql/exchange-graphcache@8.1.0(@urql/core@6.0.1(graphql@16.11.0))(graphql@16.11.0)':
+    dependencies:
+      '@0no-co/graphql.web': 1.2.0(graphql@16.11.0)
+      '@urql/core': 6.0.1(graphql@16.11.0)
       wonka: 6.3.5
     transitivePeerDependencies:
       - graphql

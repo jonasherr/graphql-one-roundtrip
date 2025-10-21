@@ -11,6 +11,8 @@ export const UserPinnedReposFragment = graphql(`
 					description
 					stargazerCount
 					owner {
+						id
+						__typename
 						login
 					}
 				}

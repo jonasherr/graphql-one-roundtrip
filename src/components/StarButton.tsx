@@ -1,20 +1,33 @@
 import { useMutation } from 'urql';
+import { graphql } from '../graphql';
 
-const ADD_STAR_MUTATION = `
+const ADD_STAR_MUTATION = graphql(`
 	mutation AddStarMutation($starrableId: ID!) {
 		addStar(input: { starrableId: $starrableId }) {
-			clientMutationId
+			starrable {
+				... on Repository {
+					id
+					viewerHasStarred
+					stargazerCount
+				}
+			}
 		}
 	}
-`;
+`);
 
-const REMOVE_STAR_MUTATION = `
+const REMOVE_STAR_MUTATION = graphql(`
 	mutation RemoveStarMutation($starrableId: ID!) {
 		removeStar(input: { starrableId: $starrableId }) {
-			clientMutationId
+			starrable {
+				... on Repository {
+					id
+					viewerHasStarred
+					stargazerCount
+				}
+			}
 		}
 	}
-`;
+`);
 
 interface StarButtonProps {
 	repositoryId: string;

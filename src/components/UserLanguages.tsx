@@ -1,10 +1,14 @@
-import { graphql, type FragmentOf, readFragment } from "../graphql";
+import { type FragmentOf, graphql, readFragment } from "../graphql";
 
 export const UserLanguagesFragment = graphql(`
 	fragment UserLanguages_user on User {
 		repositoryLanguages: repositories(first: 100, ownerAffiliations: OWNER) {
 			nodes {
+				id
+				__typename
 				primaryLanguage {
+					id
+					__typename
 					name
 					color
 				}
