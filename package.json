@@ -7,10 +7,12 @@
 		"dev": "vite",
 		"build": "tsc -b && vite build",
 		"lint": "eslint .",
-		"preview": "vite preview"
+		"preview": "vite preview",
+		"schema:generate": "npx gql-tada generate output -c tsconfig.app.json"
 	},
 	"dependencies": {
 		"@tailwindcss/vite": "^4.1.14",
+		"gql.tada": "^1.8.13",
 		"react": "^19.1.1",
 		"react-dom": "^19.1.1",
 		"react-router-dom": "^7.9.4",
