@@ -1,5 +1,5 @@
-import { type FragmentOf } from '../graphql';
-import { IssueItem, IssueItemFragment } from './IssueItem';
+import { type FragmentOf, readFragment } from "../graphql";
+import { IssueItem, IssueItemFragment } from "./IssueItem";
 
 export { IssueItemFragment };
 
@@ -15,9 +15,10 @@ export function IssueList({ issues }: IssueListProps) {
 				<p className="text-gray-600">No open issues</p>
 			) : (
 				<div>
-					{issues.map((issue) => (
-						<IssueItem key={issue.id} data={issue} />
-					))}
+					{issues.map((issueFragment) => {
+						const { id } = readFragment(IssueItemFragment, issueFragment);
+						return <IssueItem key={id} data={issueFragment} />;
+					})}
 				</div>
 			)}
 		</div>

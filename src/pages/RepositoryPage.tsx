@@ -1,10 +1,14 @@
-import { useParams, Link } from 'react-router-dom';
-import { useQuery } from 'urql';
-import { graphql } from '../graphql';
-import { RepositoryHeader, RepositoryHeaderFragment } from '../components/RepositoryHeader';
-import { IssueList, IssueItemFragment } from '../components/IssueList';
+import { Link, useParams } from "react-router-dom";
+import { useQuery } from "urql";
+import { IssueItemFragment, IssueList } from "../components/IssueList";
+import {
+	RepositoryHeader,
+	RepositoryHeaderFragment,
+} from "../components/RepositoryHeader";
+import { graphql } from "../graphql";
 
-const RepositoryPageQuery = graphql(`
+const RepositoryPageQuery = graphql(
+	`
 	query RepositoryPageQuery($owner: String!, $name: String!) {
 		repository(owner: $owner, name: $name) @_unmask {
 			...RepositoryHeader_repository
@@ -15,14 +19,16 @@ const RepositoryPageQuery = graphql(`
 			}
 		}
 	}
-`, [RepositoryHeaderFragment, IssueItemFragment]);
+`,
+	[RepositoryHeaderFragment, IssueItemFragment],
+);
 
 export default function RepositoryPage() {
 	const { owner, name } = useParams<{ owner: string; name: string }>();
 
 	const [result] = useQuery({
 		query: RepositoryPageQuery,
-		variables: { owner: owner || '', name: name || '' },
+		variables: { owner: owner || "", name: name || "" },
 		pause: !owner || !name,
 	});
 
@@ -59,7 +65,8 @@ export default function RepositoryPage() {
 	}
 
 	const repository = result.data?.repository;
-	const issues = repository?.issues?.nodes || [];
+	const issues =
+		repository?.issues?.nodes?.filter((node) => node != null) || [];
 
 	if (!repository) {
 		return (

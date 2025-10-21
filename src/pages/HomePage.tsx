@@ -1,10 +1,11 @@
-import { useQuery } from 'urql';
-import { graphql } from '../graphql';
-import { RepositoryGrid } from '../components/RepositoryGrid';
-import { UserProfile, UserProfileFragment } from '../components/UserProfile';
-import { RepositoryCardFragment } from '../components/RepositoryCard';
+import { useQuery } from "urql";
+import { RepositoryCardFragment } from "../components/RepositoryCard";
+import { RepositoryGrid } from "../components/RepositoryGrid";
+import { UserProfile, UserProfileFragment } from "../components/UserProfile";
+import { graphql } from "../graphql";
 
-const HomePageQuery = graphql(`
+const HomePageQuery = graphql(
+	`
 	query HomePageQuery($login: String!) {
 		viewer @_unmask {
 			...UserProfile_user
@@ -19,7 +20,9 @@ const HomePageQuery = graphql(`
 			}
 		}
 	}
-`, [UserProfileFragment, RepositoryCardFragment]);
+`,
+	[UserProfileFragment, RepositoryCardFragment],
+);
 
 export default function HomePage() {
 	const username = import.meta.env.VITE_GITHUB_USERNAME;
@@ -45,7 +48,9 @@ export default function HomePage() {
 	}
 
 	const viewer = result.data?.viewer;
-	const repositories = result.data?.user?.repositories?.nodes || [];
+	const repositories =
+		result.data?.user?.repositories?.nodes?.filter((node) => node != null) ||
+		[];
 
 	if (!viewer) {
 		return (
